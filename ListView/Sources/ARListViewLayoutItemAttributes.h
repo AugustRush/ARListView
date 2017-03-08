@@ -12,5 +12,6 @@
 @interface ARListViewLayoutItemAttributes : NSObject
 
 @property (nonatomic, assign) CGRect frame;
+@property (nonatomic, assign) CGFloat zIndex;
 
 @end

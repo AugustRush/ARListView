@@ -21,14 +21,15 @@
     if (self) {
         _delegate = delegate;
         _minimumLineSpacing = 1.0;
-        _itemAlign = ARListViewFlowLayoutItemAlignEnd;
+        _minimumItemSpacing = 1.0;
+        _itemAlign = ARListViewFlowLayoutItemAlignCenter;
     }
     return self;
 }
 
 - (void)preparedLayout {
     _calculateX = 0.0;
-    _calculateY = _minimumLineSpacing;
+    _calculateY = 0.0;
 }
 
 - (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath {
@@ -37,26 +38,33 @@
     CGSize size = [_delegate flowLayout:self sizeForItemAtIndexPath:indexPath];
     switch (_itemAlign) {
         case ARListViewFlowLayoutItemAlignStart:{
-            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
-            _calculateY += size.height + _minimumLineSpacing;
+            if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
+                _calculateX += size.width + _minimumItemSpacing;
+            }
             break;
         }
         case ARListViewFlowLayoutItemAlignCenter:{
-            _calculateX = CGRectGetMidX(self.listView.bounds) - size.width/2.0;
-            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
-            _calculateY += size.height + _minimumLineSpacing;
+            if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
+                _calculateY = CGRectGetMidY(self.listView.bounds) - size.height/2.0;
+            } else {
+                _calculateX = CGRectGetMidX(self.listView.bounds) - size.width/2.0;
+            }
             break;
         }
         case ARListViewFlowLayoutItemAlignEnd:{
-            _calculateX = CGRectGetMaxX(self.listView.bounds) - size.width;
-            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
-            _calculateY += size.height + _minimumLineSpacing;
+            if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
+                _calculateY = CGRectGetMaxX(self.listView.bounds) - size.height;
+            } else {
+                _calculateX = CGRectGetMaxX(self.listView.bounds) - size.width;
+            }
             break;
         }
             
         default:
             break;
     }
+    attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+    _calculateY += size.height + _minimumLineSpacing;
     return attributes;
 }
 

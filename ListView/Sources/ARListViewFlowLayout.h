@@ -14,6 +14,11 @@ typedef NS_ENUM(NSUInteger, ARListViewFlowLayoutItemAlign) {
     ARListViewFlowLayoutItemAlignEnd
 };
 
+typedef NS_ENUM(NSUInteger, ARListViewScrollDirection) {
+    ARListViewScrollDirectionVertical,
+    ARListViewScrollDirectionHorizontal
+};
+
 @class ARListViewFlowLayout;
 @protocol ARListViewFlowLayoutDelegate <NSObject>
 
@@ -23,8 +28,10 @@ typedef NS_ENUM(NSUInteger, ARListViewFlowLayoutItemAlign) {
 
 @interface ARListViewFlowLayout : ARListViewLayout
 
-@property (nonatomic) CGFloat minimumLineSpacing;
-@property (nonatomic) ARListViewFlowLayoutItemAlign itemAlign;
+@property (nonatomic, assign) CGFloat minimumLineSpacing;
+@property (nonatomic, assign) CGFloat minimumItemSpacing;
+@property (nonatomic, assign) ARListViewFlowLayoutItemAlign itemAlign;
+@property (nonatomic, assign) ARListViewScrollDirection scrollDirection;
 
 - (instancetype)initWithDelegate:(id<ARListViewFlowLayoutDelegate>)delegate;
 

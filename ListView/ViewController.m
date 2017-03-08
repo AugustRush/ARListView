@@ -24,7 +24,6 @@
     listView.dataSource = self;
     [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];
     [listView registerClass:[ListViewItem2 class] forCellReuseIdentifier:@"item2"];
-    [listView performSelector:@selector(reloadData) withObject:nil afterDelay:5];
     self.view = listView;
 }
 

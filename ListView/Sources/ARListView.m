@@ -210,6 +210,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     if ([self __selfBoundsIsContainedFrame:attr.frame]) {
         __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:indexPath];
         item.frame = attr.frame;
+        item.layer.zPosition = attr.zIndex;
         [self addSubview:item];
         NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
     }
