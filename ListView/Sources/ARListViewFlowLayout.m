@@ -21,28 +21,48 @@
     if (self) {
         _delegate = delegate;
         _minimumLineSpacing = 1.0;
-        _calculateX = 0.0;
-        _calculateY = 0.0;
+        _itemAlign = ARListViewFlowLayoutItemAlignEnd;
     }
     return self;
 }
 
 - (void)preparedLayout {
     _calculateX = 0.0;
-    _calculateY = 0.0;
+    _calculateY = _minimumLineSpacing;
 }
 
 - (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath {
     
     ARListViewLayoutItemAttributes *attributes = [[ARListViewLayoutItemAttributes alloc] init];
     CGSize size = [_delegate flowLayout:self sizeForItemAtIndexPath:indexPath];
-    attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
-    _calculateY += size.height + _minimumLineSpacing;
+    switch (_itemAlign) {
+        case ARListViewFlowLayoutItemAlignStart:{
+            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+            _calculateY += size.height + _minimumLineSpacing;
+            break;
+        }
+        case ARListViewFlowLayoutItemAlignCenter:{
+            _calculateX = CGRectGetMidX(self.listView.bounds) - size.width/2.0;
+            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+            _calculateY += size.height + _minimumLineSpacing;
+            break;
+        }
+        case ARListViewFlowLayoutItemAlignEnd:{
+            _calculateX = CGRectGetMaxX(self.listView.bounds) - size.width;
+            attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+            _calculateY += size.height + _minimumLineSpacing;
+            break;
+        }
+            
+        default:
+            break;
+    }
     return attributes;
 }
 
 - (void)finishedLayout {
-
+    _calculateX = 0;
+    _calculateY = 0;
 }
 
 @end

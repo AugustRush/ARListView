@@ -8,9 +8,10 @@
 
 #import "ARListViewLayout.h"
 
-typedef NS_ENUM(NSUInteger, ARListViewFlowLayoutSectionAlign) {
-    ARListViewFlowLayoutSectionAlignVertical,
-    ARListViewFlowLayoutSectionAlignHorizonal,
+typedef NS_ENUM(NSUInteger, ARListViewFlowLayoutItemAlign) {
+    ARListViewFlowLayoutItemAlignStart,
+    ARListViewFlowLayoutItemAlignCenter,
+    ARListViewFlowLayoutItemAlignEnd
 };
 
 @class ARListViewFlowLayout;
@@ -23,7 +24,7 @@ typedef NS_ENUM(NSUInteger, ARListViewFlowLayoutSectionAlign) {
 @interface ARListViewFlowLayout : ARListViewLayout
 
 @property (nonatomic) CGFloat minimumLineSpacing;
-@property (nonatomic) ARListViewFlowLayoutSectionAlign sectionAlign;
+@property (nonatomic) ARListViewFlowLayoutItemAlign itemAlign;
 
 - (instancetype)initWithDelegate:(id<ARListViewFlowLayoutDelegate>)delegate;
 
