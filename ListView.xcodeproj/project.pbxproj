@@ -18,6 +18,8 @@
 		977151B51E6F007A002CCAFC /* ARListViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151B41E6F007A002CCAFC /* ARListViewFlowLayout.m */; };
 		977151B81E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151B71E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m */; };
 		977151D81E6FB412002CCAFC /* ARListViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151D71E6FB412002CCAFC /* ARListViewLayout.m */; };
+		977151DB1E6FDE4D002CCAFC /* ListViewItem1.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151DA1E6FDE4D002CCAFC /* ListViewItem1.m */; };
+		977151DE1E6FDE5F002CCAFC /* ListViewItem2.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151DD1E6FDE5F002CCAFC /* ListViewItem2.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,10 @@
 		977151B71E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARListViewLayoutItemAttributes.m; sourceTree = "<group>"; };
 		977151D61E6FB412002CCAFC /* ARListViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARListViewLayout.h; sourceTree = "<group>"; };
 		977151D71E6FB412002CCAFC /* ARListViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARListViewLayout.m; sourceTree = "<group>"; };
+		977151D91E6FDE4D002CCAFC /* ListViewItem1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewItem1.h; sourceTree = "<group>"; };
+		977151DA1E6FDE4D002CCAFC /* ListViewItem1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewItem1.m; sourceTree = "<group>"; };
+		977151DC1E6FDE5F002CCAFC /* ListViewItem2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewItem2.h; sourceTree = "<group>"; };
+		977151DD1E6FDE5F002CCAFC /* ListViewItem2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewItem2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +84,10 @@
 				977151961E6EF67A002CCAFC /* AppDelegate.m */,
 				977151981E6EF67A002CCAFC /* ViewController.h */,
 				977151991E6EF67A002CCAFC /* ViewController.m */,
+				977151D91E6FDE4D002CCAFC /* ListViewItem1.h */,
+				977151DA1E6FDE4D002CCAFC /* ListViewItem1.m */,
+				977151DC1E6FDE5F002CCAFC /* ListViewItem2.h */,
+				977151DD1E6FDE5F002CCAFC /* ListViewItem2.m */,
 				9771519B1E6EF67A002CCAFC /* Main.storyboard */,
 				9771519E1E6EF67A002CCAFC /* Assets.xcassets */,
 				977151A01E6EF67A002CCAFC /* LaunchScreen.storyboard */,
@@ -184,9 +194,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				977151DB1E6FDE4D002CCAFC /* ListViewItem1.m in Sources */,
 				977151AC1E6EF6C3002CCAFC /* ARListView.m in Sources */,
 				9771519A1E6EF67A002CCAFC /* ViewController.m in Sources */,
 				977151AF1E6EFC91002CCAFC /* ARListViewItem.m in Sources */,
+				977151DE1E6FDE5F002CCAFC /* ListViewItem2.m in Sources */,
 				977151971E6EF67A002CCAFC /* AppDelegate.m in Sources */,
 				977151941E6EF67A002CCAFC /* main.m in Sources */,
 				977151D81E6FB412002CCAFC /* ARListViewLayout.m in Sources */,

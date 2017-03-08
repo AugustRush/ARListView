@@ -13,6 +13,7 @@
 @protocol ARListViewLayoutProtocol;
 @protocol ARListViewDataSource;
 @protocol ARListViewDelegate;
+NS_ASSUME_NONNULL_BEGIN
 @interface ARListView : UIScrollView
 
 @property (nonatomic, strong, readonly) ARListViewLayout *layout;
@@ -21,7 +22,9 @@
 
 - (instancetype)initWithLayout:(ARListViewLayout *)layout NS_DESIGNATED_INITIALIZER;
 
-
+- (void)registerClass:(Class)itemClass forCellReuseIdentifier:(nonnull NSString *)identifier;
+- (__kindof ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath;
+//
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
@@ -42,3 +45,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

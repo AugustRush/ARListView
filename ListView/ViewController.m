@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "ARListView.h"
+#import "ListViewItem1.h"
+#import "ListViewItem2.h"
 
 @interface ViewController ()<ARListViewDataSource,ARListViewFlowLayoutDelegate>
 
@@ -20,6 +22,8 @@
     ARListView *listView = [[ARListView alloc] initWithLayout:flowLayout];
     listView.backgroundColor = [UIColor purpleColor];
     listView.dataSource = self;
+    [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];
+    [listView registerClass:[ListViewItem2 class] forCellReuseIdentifier:@"item2"];
     self.view = listView;
 }
 
@@ -38,16 +42,16 @@
 #pragma mark - ARListViewDataSource methods
 
 - (NSUInteger)numberOfSectionsInListView:(ARListView *)listView {
-    return 2;
+    return 1;
 }
 
 - (NSUInteger)listView:(ARListView *)listView numberOfItemsInSection:(NSUInteger)section {
-    return 10;
+    return 100;
 }
 
 - (ARListViewItem *)listView:(ARListView *)listView itemAtIndexPath:(NSIndexPath *)indexPath {
-    ARListViewItem *listViewItem = [[ARListViewItem alloc] init];
-    listViewItem.backgroundColor = [UIColor whiteColor];
+    NSString *identifier = indexPath.section == 0 ? @"item1" : @"item2";
+    ARListViewItem *listViewItem = [listView dequeueReusableItemWithIdentifier:identifier indexPath:indexPath];
     return listViewItem;
 }
 

@@ -9,6 +9,20 @@
 #import "ARListView.h"
 #import "ARListViewFlowLayout.h"
 #import "ARListViewLayoutItemAttributes.h"
+
+@interface _ARListItemReusedInfo : NSObject
+
+@property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, weak) ARListViewLayoutItemAttributes *attribute;
+@property (nonatomic, copy) NSString *reuseIdentifier;
+@property (nonatomic, strong) __kindof ARListViewItem *item;
+
+@end
+
+@implementation _ARListItemReusedInfo
+
+@end
+
 ////
 @interface ARListViewLayout (ARPrivate)
 
@@ -31,7 +45,9 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     BOOL _hasAutoReload;
     NSMutableDictionary<NSIndexPath *,ARListViewLayoutItemAttributes *> *_itemsAttributes;
     NSMutableDictionary<NSString *,REUSED_SET> *_itemReusedPool;
-    NSMapTable<NSIndexPath *,ARListViewItem *> *_visibleItems;
+    NSHashTable<__kindof ARListViewItem *> *_visibleItems;
+    NSMapTable<NSIndexPath *,_ARListItemReusedInfo *> *_visibleItemInfos;
+    NSMutableDictionary<NSString *, Class> *_registedItemClasses;
 }
 @dynamic delegate;
 @synthesize layout = _layout;
@@ -54,7 +70,9 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 - (void)__setUp {
     _itemsAttributes = [NSMutableDictionary dictionary];
     _itemReusedPool = [NSMutableDictionary dictionary];
-    _visibleItems = [NSMapTable strongToWeakObjectsMapTable];
+    _visibleItems = [NSHashTable weakObjectsHashTable];
+    _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
+    _registedItemClasses = [NSMutableDictionary dictionary];
     CFRunLoopRef runloop = CFRunLoopGetMain();
     CFRunLoopObserverContext context = {0,(__bridge void*)self,NULL,NULL};
     
@@ -66,6 +84,8 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
     CFRelease(observer);
 }
+
+#pragma mark - Public methods
 
 - (void)reloadData {
     NSUInteger sections = 1;
@@ -100,6 +120,36 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     self.contentSize = CGSizeMake(totalWidth, totalHeight);
 }
 
+- (void)registerClass:(Class)itemClass forCellReuseIdentifier:(NSString *)identifier {
+    [_registedItemClasses setObject:itemClass forKey:identifier];
+}
+
+- (ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
+
+    Class itemClass = [_registedItemClasses objectForKey:identifier];
+    REUSED_SET reuseSet = [self __reusedSetForIdentifier:identifier];
+    __kindof ARListViewItem *item = [reuseSet anyObject];
+    if (item == nil) {
+        item = [[itemClass alloc] init];
+    } else {
+        [reuseSet removeObject:item];
+    }
+    [self __setVisibleItem:item forIdentifier:identifier indexPath:indexPath];
+    return item;
+}
+
+#pragma mark - Private methods
+
+- (void)__setVisibleItem:(__kindof ARListViewItem *)item forIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
+    [_visibleItems addObject:item];
+    _ARListItemReusedInfo *info = [[_ARListItemReusedInfo alloc] init];
+    info.reuseIdentifier = identifier;
+    info.attribute = _itemsAttributes[indexPath];
+    info.indexPath = indexPath;
+    info.item = item;
+    [_visibleItemInfos setObject:info forKey:indexPath];
+}
+
 - (REUSED_SET)__reusedSetForIdentifier:(NSString *)identifier {
     REUSED_SET set = _itemReusedPool[identifier];
     if (set == nil) {
@@ -112,37 +162,45 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 - (void)__didScroll {
     //remove
     NSMutableSet *removes = [NSMutableSet set];
-    for (NSIndexPath *indexPath in _visibleItems.keyEnumerator) {
-        __kindof ARListViewItem *item = [_visibleItems objectForKey:indexPath];
-        if (CGRectIsNull(CGRectIntersection(item.frame, self.bounds))) {
-            REUSED_SET reuseSet = [self __reusedSetForIdentifier:@"__test"];
-            [reuseSet addObject:item];
-            [item removeFromSuperview];
+    for (NSIndexPath *indexPath in _visibleItemInfos.keyEnumerator) {
+        _ARListItemReusedInfo *info = [_visibleItemInfos objectForKey:indexPath];
+        if (![self __selfBoundsIsContainedFrame:info.item.frame]) {
+            REUSED_SET reuseSet = [self __reusedSetForIdentifier:info.reuseIdentifier];
+            [reuseSet addObject:info.item];
+            [info.item removeFromSuperview];
+            [_visibleItems removeObject:info.item];
+            //
             [removes addObject:indexPath];
         }
     }
+    // remove infos
     for (NSIndexPath *indexPath in removes) {
-        [_visibleItems removeObjectForKey:indexPath];
+        NSLog(@"REmove ----> %ld %ld",[indexPath section],[indexPath row]);
+        [_visibleItemInfos removeObjectForKey:indexPath];
     }
-    
     // add
     [_itemsAttributes enumerateKeysAndObjectsUsingBlock:^(NSIndexPath * _Nonnull key, ARListViewLayoutItemAttributes * _Nonnull obj, BOOL * _Nonnull stop) {
-        if (![_visibleItems objectForKey:key]) {
+        if ([_visibleItemInfos objectForKey:key] == nil) {// hasn't visible
             [self __showItemIfNeededWithIndexPath:key attribute:obj];
         }
     }];
 }
 
-#define __ARListScrollInsetThreshold -100.0
-
 - (void)__showItemIfNeededWithIndexPath:(NSIndexPath *)indexPath attribute:(ARListViewLayoutItemAttributes *)attr {
     //
-    if (!CGRectIsNull(CGRectIntersection(attr.frame, CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold)))) {
+    if ([self __selfBoundsIsContainedFrame:attr.frame]) {
         __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:indexPath];
         item.frame = attr.frame;
         [self addSubview:item];
-        [_visibleItems setObject:item forKey:indexPath];
+        NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
     }
+}
+
+#define __ARListScrollInsetThreshold -100.0
+
+- (BOOL)__selfBoundsIsContainedFrame:(CGRect)frame {
+    CGRect thresholdRect = CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold);
+    return CGRectIntersectsRect(thresholdRect, frame);
 }
 
 static void __RunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
