@@ -12,26 +12,37 @@
 
 @implementation ARListViewFlowLayout {
     id<ARListViewFlowLayoutDelegate> _delegate;
+    CGFloat _calculateX;
+    CGFloat _calculateY;
 }
 
 - (instancetype)initWithDelegate:(id<ARListViewFlowLayoutDelegate>)delegate {
     self = [super init];
     if (self) {
         _delegate = delegate;
-        _itemInset = 1.0;
+        _minimumLineSpacing = 1.0;
+        _calculateX = 0.0;
+        _calculateY = 0.0;
     }
     return self;
 }
 
-- (ARListViewLayoutItemAttributes *)attributesAtIndexPath:(NSIndexPath *)indexPath {
-    static CGFloat x = 0.0;
-    static CGFloat y = 0.0;
+- (void)preparedLayout {
+    _calculateX = 0.0;
+    _calculateY = 0.0;
+}
+
+- (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath {
     
     ARListViewLayoutItemAttributes *attributes = [[ARListViewLayoutItemAttributes alloc] init];
     CGSize size = [_delegate flowLayout:self sizeForItemAtIndexPath:indexPath];
-    attributes.frame = CGRectMake(x, y, size.width, size.height);
-    y += size.height + _itemInset;
+    attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+    _calculateY += size.height + _minimumLineSpacing;
     return attributes;
+}
+
+- (void)finishedLayout {
+
 }
 
 @end

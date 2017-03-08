@@ -10,6 +10,14 @@
 #import "ARListViewFlowLayout.h"
 #import "ARListViewLayoutItemAttributes.h"
 
+#define DEBUG_LOG 0
+
+#if DEBUG_LOG
+#define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#define NSLog(...)
+#endif
+
 @interface _ARListItemReusedInfo : NSObject
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
@@ -88,6 +96,9 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 #pragma mark - Public methods
 
 - (void)reloadData {
+    [_layout preparedLayout];
+    [_visibleItems removeAllObjects];
+    [_visibleItemInfos removeAllObjects];
     NSUInteger sections = 1;
     if ([self.dataSource respondsToSelector:@selector(numberOfSectionsInListView:)]) {
         sections = [self.dataSource numberOfSectionsInListView:self];
@@ -102,7 +113,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
         NSUInteger numberOfItems = [self.dataSource listView:self numberOfItemsInSection:i];
         for (NSUInteger j = 0; j < numberOfItems; j++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
-            ARListViewLayoutItemAttributes *attributes = [self.layout attributesAtIndexPath:indexPath];
+            ARListViewLayoutItemAttributes *attributes = [_layout layoutAttributesAtIndexPath:indexPath];
             [_itemsAttributes setObject:attributes forKey:indexPath];
             //
             CGRect itemFrame = attributes.frame;
@@ -118,10 +129,15 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     totalWidth = totalWidth + (maxX - minX);
     totalHeight = totalHeight + (maxY - minY);
     self.contentSize = CGSizeMake(totalWidth, totalHeight);
+    [_layout finishedLayout];
 }
 
 - (void)registerClass:(Class)itemClass forCellReuseIdentifier:(NSString *)identifier {
     [_registedItemClasses setObject:itemClass forKey:identifier];
+}
+
+- (ARListViewLayoutItemAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [_layout layoutAttributesAtIndexPath:indexPath];
 }
 
 - (ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
@@ -160,6 +176,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 }
 
 - (void)__didScroll {
+    [CATransaction begin];
     //remove
     NSMutableSet *removes = [NSMutableSet set];
     for (NSIndexPath *indexPath in _visibleItemInfos.keyEnumerator) {
@@ -184,6 +201,8 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
             [self __showItemIfNeededWithIndexPath:key attribute:obj];
         }
     }];
+    //
+    [CATransaction commit];
 }
 
 - (void)__showItemIfNeededWithIndexPath:(NSIndexPath *)indexPath attribute:(ARListViewLayoutItemAttributes *)attr {

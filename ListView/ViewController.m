@@ -24,12 +24,12 @@
     listView.dataSource = self;
     [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];
     [listView registerClass:[ListViewItem2 class] forCellReuseIdentifier:@"item2"];
+    [listView performSelector:@selector(reloadData) withObject:nil afterDelay:5];
     self.view = listView;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -42,16 +42,17 @@
 #pragma mark - ARListViewDataSource methods
 
 - (NSUInteger)numberOfSectionsInListView:(ARListView *)listView {
-    return 1;
+    return 2;
 }
 
 - (NSUInteger)listView:(ARListView *)listView numberOfItemsInSection:(NSUInteger)section {
-    return 100;
+    return 50;
 }
 
 - (ARListViewItem *)listView:(ARListView *)listView itemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = indexPath.section == 0 ? @"item1" : @"item2";
     ARListViewItem *listViewItem = [listView dequeueReusableItemWithIdentifier:identifier indexPath:indexPath];
+    
     return listViewItem;
 }
 

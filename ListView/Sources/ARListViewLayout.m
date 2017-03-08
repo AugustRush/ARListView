@@ -15,9 +15,17 @@
 }
 @synthesize listView = _listView;
 
-- (ARListViewLayoutItemAttributes *)attributesAtIndexPath:(NSIndexPath *)indexPath {
+- (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath {
     NSAssert(0, @"should be subclass override!");
     return nil;
+}
+
+- (void)preparedLayout {
+    NSAssert(0, @"should be subclass override!");
+}
+
+- (void)finishedLayout {
+    NSAssert(0, @"should be subclass override!");
 }
 
 - (void)setListView:(ARListView *)listView {

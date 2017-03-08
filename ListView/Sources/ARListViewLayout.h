@@ -15,6 +15,8 @@
 
 @property (nonatomic, readonly) ARListView *listView;
 // subclass should override methods
-- (ARListViewLayoutItemAttributes *)attributesAtIndexPath:(NSIndexPath *)indexPath;
+- (void)preparedLayout;
+- (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath;
+- (void)finishedLayout;
 
 @end
