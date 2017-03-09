@@ -23,6 +23,7 @@
         _minimumLineSpacing = 1.0;
         _minimumItemSpacing = 1.0;
         _itemAlign = ARListViewFlowLayoutItemAlignCenter;
+        _scrollDirection = ARListViewScrollDirectionHorizontal;
     }
     return self;
 }
@@ -40,22 +41,35 @@
         case ARListViewFlowLayoutItemAlignStart:{
             if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
                 _calculateX += size.width + _minimumItemSpacing;
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateX += size.width + _minimumLineSpacing;
+            } else {
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateY += size.height + _minimumLineSpacing;
             }
             break;
         }
         case ARListViewFlowLayoutItemAlignCenter:{
             if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
                 _calculateY = CGRectGetMidY(self.listView.bounds) - size.height/2.0;
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateX += size.width + _minimumLineSpacing;
             } else {
                 _calculateX = CGRectGetMidX(self.listView.bounds) - size.width/2.0;
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateY += size.height + _minimumLineSpacing;
             }
             break;
         }
         case ARListViewFlowLayoutItemAlignEnd:{
             if (_scrollDirection == ARListViewScrollDirectionHorizontal) {
                 _calculateY = CGRectGetMaxX(self.listView.bounds) - size.height;
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateX += size.width + _minimumLineSpacing;
             } else {
                 _calculateX = CGRectGetMaxX(self.listView.bounds) - size.width;
+                attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
+                _calculateY += size.height + _minimumLineSpacing;
             }
             break;
         }
@@ -63,8 +77,7 @@
         default:
             break;
     }
-    attributes.frame = CGRectMake(_calculateX, _calculateY, size.width, size.height);
-    _calculateY += size.height + _minimumLineSpacing;
+    
     return attributes;
 }
 

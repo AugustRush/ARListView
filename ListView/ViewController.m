@@ -58,7 +58,7 @@
 #pragma mark - ARListViewFlowLayoutDelegate methods
 
 - (CGSize)flowLayout:(ARListViewFlowLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(310, 40);
+    return CGSizeMake(50, 50);
 }
 
 @end
