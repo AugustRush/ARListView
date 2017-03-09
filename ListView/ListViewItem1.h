@@ -10,4 +10,6 @@
 
 @interface ListViewItem1 : ARListViewItem
 
+@property (nonatomic, strong) UILabel *titleLabel;
+
 @end

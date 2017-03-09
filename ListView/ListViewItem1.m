@@ -20,6 +20,15 @@
 
 - (void)setUp {
     self.backgroundColor = [UIColor colorWithRed:(arc4random()%255)/255.0 green:(arc4random()%255)/255.0 blue:(arc4random()%255)/255.0 alpha:1.0];
+    _titleLabel = [[UILabel alloc] init];
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.font = [UIFont boldSystemFontOfSize:30];
+    [self addSubview:_titleLabel];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _titleLabel.frame = self.bounds;
 }
 
 @end

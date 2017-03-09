@@ -45,20 +45,27 @@
 }
 
 - (NSUInteger)listView:(ARListView *)listView numberOfItemsInSection:(NSUInteger)section {
-    return 50;
+    return 100;
 }
 
 - (ARListViewItem *)listView:(ARListView *)listView itemAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *identifier = indexPath.section == 0 ? @"item1" : @"item2";
-    ARListViewItem *listViewItem = [listView dequeueReusableItemWithIdentifier:identifier indexPath:indexPath];
-    
+    ARListViewItem *listViewItem;
+    if (indexPath.section == 0) {
+        ListViewItem1 *item = [listView dequeueReusableItemWithIdentifier:@"item1" indexPath:indexPath];
+        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",indexPath.row,indexPath.section];
+        listViewItem = item;
+    } else {
+        ListViewItem2 *item = [listView dequeueReusableItemWithIdentifier:@"item2" indexPath:indexPath];
+        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",indexPath.row,indexPath.section];
+        listViewItem = item;
+    }
     return listViewItem;
 }
 
 #pragma mark - ARListViewFlowLayoutDelegate methods
 
 - (CGSize)flowLayout:(ARListViewFlowLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(50, 50);
+    return CGSizeMake(300, 40);
 }
 
 @end

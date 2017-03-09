@@ -23,7 +23,7 @@
         _minimumLineSpacing = 1.0;
         _minimumItemSpacing = 1.0;
         _itemAlign = ARListViewFlowLayoutItemAlignCenter;
-        _scrollDirection = ARListViewScrollDirectionHorizontal;
+        _scrollDirection = ARListViewScrollDirectionVertical;
     }
     return self;
 }
