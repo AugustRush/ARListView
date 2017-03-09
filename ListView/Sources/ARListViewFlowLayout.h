@@ -22,6 +22,7 @@ typedef NS_ENUM(NSUInteger, ARListViewScrollDirection) {
 @class ARListViewFlowLayout;
 @protocol ARListViewFlowLayoutDelegate <NSObject>
 
+@required
 - (CGSize)flowLayout:(ARListViewFlowLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

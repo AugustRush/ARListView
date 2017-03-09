@@ -53,7 +53,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     BOOL _hasAutoReload;
     NSMutableDictionary<NSIndexPath *,ARListViewLayoutItemAttributes *> *_itemsAttributes;
     NSMutableDictionary<NSString *,REUSED_SET> *_itemReusedPool;
-    NSHashTable<__kindof ARListViewItem *> *_visibleItems;
+    NSMapTable<__kindof ARListViewItem *,NSIndexPath *> *_visibleItems;
     NSMapTable<NSIndexPath *,_ARListItemReusedInfo *> *_visibleItemInfos;
     NSMutableDictionary<NSString *, Class> *_registedItemClasses;
 }
@@ -78,7 +78,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 - (void)__setUp {
     _itemsAttributes = [NSMutableDictionary dictionary];
     _itemReusedPool = [NSMutableDictionary dictionary];
-    _visibleItems = [NSHashTable weakObjectsHashTable];
+    _visibleItems = [NSMapTable strongToStrongObjectsMapTable];
     _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
     _registedItemClasses = [NSMutableDictionary dictionary];
     CFRunLoopRef runloop = CFRunLoopGetMain();
@@ -157,7 +157,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 #pragma mark - Private methods
 
 - (void)__setVisibleItem:(__kindof ARListViewItem *)item forIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
-    [_visibleItems addObject:item];
+    [_visibleItems setObject:indexPath forKey:item];
     _ARListItemReusedInfo *info = [[_ARListItemReusedInfo alloc] init];
     info.reuseIdentifier = identifier;
     info.attribute = _itemsAttributes[indexPath];
@@ -185,7 +185,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
             REUSED_SET reuseSet = [self __reusedSetForIdentifier:info.reuseIdentifier];
             [reuseSet addObject:info.item];
             [info.item removeFromSuperview];
-            [_visibleItems removeObject:info.item];
+            [_visibleItems removeObjectForKey:info.item];
             //
             [removes addObject:indexPath];
         }
@@ -216,7 +216,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     }
 }
 
-#define __ARListScrollInsetThreshold -100.0
+#define __ARListScrollInsetThreshold -40.0
 
 - (BOOL)__selfBoundsIsContainedFrame:(CGRect)frame {
     CGRect thresholdRect = CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold);

@@ -52,11 +52,11 @@
     ARListViewItem *listViewItem;
     if (indexPath.section == 0) {
         ListViewItem1 *item = [listView dequeueReusableItemWithIdentifier:@"item1" indexPath:indexPath];
-        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",indexPath.row,indexPath.section];
+        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",(long)indexPath.row,indexPath.section];
         listViewItem = item;
     } else {
         ListViewItem2 *item = [listView dequeueReusableItemWithIdentifier:@"item2" indexPath:indexPath];
-        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",indexPath.row,indexPath.section];
+        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",(long)indexPath.row,indexPath.section];
         listViewItem = item;
     }
     return listViewItem;

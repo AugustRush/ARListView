@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol ARListViewDelegate <NSObject>
 
+@optional
+- (void)listView:(ARListView *)listView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
