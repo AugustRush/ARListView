@@ -52,12 +52,15 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 
 @implementation ARListView {
     ARListViewLayout *_layout;
-    BOOL _hasAutoReload;
     NSMutableArray<NSMutableArray *> *_itemsAttributes;
     NSMutableDictionary<NSString *,REUSED_SET> *_itemReusedPool;
     NSMapTable<__kindof ARListViewItem *,NSIndexPath *> *_visibleItems;
     NSMapTable<NSIndexPath *,_ARListItemReusedInfo *> *_visibleItemInfos;
     NSMutableDictionary<NSString *, Class> *_registedItemClasses;
+    struct {
+        unsigned int hasAutoReload : 1;
+        unsigned int preparedInsertItems : 1;
+    } _flags;
 }
 @dynamic delegate;
 @synthesize layout = _layout;
@@ -77,30 +80,11 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     return [self initWithLayout:flowLayout];
 }
 
-- (void)__setUp {
-    _itemsAttributes = [NSMutableArray array];
-    _itemReusedPool = [NSMutableDictionary dictionary];
-    _visibleItems = [NSMapTable strongToStrongObjectsMapTable];
-    _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
-    _registedItemClasses = [NSMutableDictionary dictionary];
-    CFRunLoopRef runloop = CFRunLoopGetMain();
-    CFRunLoopObserverContext context = {0,(__bridge void*)self,NULL,NULL};
-    
-    CFRunLoopObserverRef observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
-                                       kCFRunLoopBeforeWaiting,
-                                       true,      // repeat
-                                       0xFFFFFF,  // after CATransaction(2000000)
-                                       __RunLoopObserverCallBack, &context);
-    CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
-    CFRelease(observer);
-}
-
 #pragma mark - Public methods
 
 - (void)reloadData {
     [_layout preparedLayout];
-    [_visibleItems removeAllObjects];
-    [_visibleItemInfos removeAllObjects];
+    [self __clear];
     NSUInteger sections = 1;
     if ([self.dataSource respondsToSelector:@selector(numberOfSectionsInListView:)]) {
         sections = [self.dataSource numberOfSectionsInListView:self];
@@ -166,10 +150,46 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 
 #warning need to impliment
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
-    
+    for (NSIndexPath *indexPath in indexPaths) {
+        ARListViewLayoutItemAttributes *attr = [_layout layoutAttributesAtIndexPath:indexPath];
+        [self __cachedAttributes:attr atIndexPath:indexPath];
+        [self reloadData];
+    }
 }
 
 #pragma mark - Private methods
+
+- (void)__setUp {
+    _itemsAttributes = [NSMutableArray array];
+    _itemReusedPool = [NSMutableDictionary dictionary];
+    _visibleItems = [NSMapTable weakToWeakObjectsMapTable];
+    _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
+    _registedItemClasses = [NSMutableDictionary dictionary];
+    CFRunLoopRef runloop = CFRunLoopGetMain();
+    CFRunLoopObserverContext context = {0,(__bridge void*)self,NULL,NULL};
+    
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
+                                                            kCFRunLoopBeforeWaiting,
+                                                            true,      // repeat
+                                                            0xFFFFFF,  // after CATransaction(2000000)
+                                                            __RunLoopObserverCallBack, &context);
+    CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
+    CFRelease(observer);
+}
+
+- (void)__reloadDataIfNeeded {
+    if (!_flags.hasAutoReload) {
+        [self reloadData];
+        _flags.hasAutoReload = YES;
+    }
+}
+
+- (void)__clear {
+    for (ARListViewItem *item in _visibleItems) {
+        [item removeFromSuperview];
+    }
+    [_visibleItemInfos removeAllObjects];
+}
 
 - (void)__setVisibleItem:(__kindof ARListViewItem *)item forIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
     [_visibleItems setObject:indexPath forKey:item];
@@ -293,10 +313,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 
 static void __RunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
     ARListView *listView = (__bridge ARListView *)info;
-    if (!listView->_hasAutoReload) {
-        [listView reloadData];
-        listView->_hasAutoReload = YES;
-    }
+    [listView __reloadDataIfNeeded];
     [listView __didScroll];
 }
 

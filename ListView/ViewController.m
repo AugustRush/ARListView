@@ -13,6 +13,8 @@
 
 @interface ViewController ()<ARListViewDataSource,ARListViewFlowLayoutDelegate,ARListViewDelegate>
 
+@property (nonatomic, strong) NSMutableArray<NSString *> *feeds;
+
 @end
 
 @implementation ViewController
@@ -31,6 +33,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    self.feeds = [NSMutableArray array];
+    for (int i = 0; i < 200; i++) {
+        [self.feeds addObject:@"Test"];
+    }
 }
 
 
@@ -46,18 +53,20 @@
 }
 
 - (NSUInteger)listView:(ARListView *)listView numberOfItemsInSection:(NSUInteger)section {
-    return 100;
+    return self.feeds.count;
 }
 
 - (ARListViewItem *)listView:(ARListView *)listView itemAtIndexPath:(NSIndexPath *)indexPath {
     ARListViewItem *listViewItem;
+    NSString *text = self.feeds[indexPath.row];
+    
     if (indexPath.section == 0) {
         ListViewItem1 *item = [listView dequeueReusableItemWithIdentifier:@"item1" indexPath:indexPath];
-        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",(long)indexPath.row,indexPath.section];
+        item.titleLabel.text = [NSString stringWithFormat:@"%@[%ld  %ld]",text,(long)indexPath.row,(long)indexPath.section];
         listViewItem = item;
     } else {
         ListViewItem2 *item = [listView dequeueReusableItemWithIdentifier:@"item2" indexPath:indexPath];
-        item.titleLabel.text = [NSString stringWithFormat:@"[%ld  %ld]",(long)indexPath.row,indexPath.section];
+        item.titleLabel.text = [NSString stringWithFormat:@"%@[%ld  %ld]",text,(long)indexPath.row,(long)indexPath.section];
         listViewItem = item;
     }
     return listViewItem;
@@ -67,13 +76,15 @@
 
 - (void)listView:(ARListView *)listView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"did selected row at %@",indexPath);
-    [listView reloadData];
+    NSIndexPath *insert = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+    [self.feeds insertObject:@"INSERT" atIndex:indexPath.row];
+    [listView insertItemsAtIndexPaths:@[insert]];
 }
 
 #pragma mark - ARListViewFlowLayoutDelegate methods
 
 - (CGSize)flowLayout:(ARListViewFlowLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(300, 40);
+    return CGSizeMake(300, 40 + indexPath.row);
 }
 
 @end
