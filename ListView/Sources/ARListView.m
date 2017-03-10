@@ -18,6 +18,8 @@
 #define NSLog(...)
 #endif
 
+#define ARListViewInvalidAttributes @0
+
 @interface _ARListItemReusedInfo : NSObject
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
@@ -51,7 +53,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 @implementation ARListView {
     ARListViewLayout *_layout;
     BOOL _hasAutoReload;
-    NSMutableDictionary<NSIndexPath *,ARListViewLayoutItemAttributes *> *_itemsAttributes;
+    NSMutableArray<NSMutableArray *> *_itemsAttributes;
     NSMutableDictionary<NSString *,REUSED_SET> *_itemReusedPool;
     NSMapTable<__kindof ARListViewItem *,NSIndexPath *> *_visibleItems;
     NSMapTable<NSIndexPath *,_ARListItemReusedInfo *> *_visibleItemInfos;
@@ -76,7 +78,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 }
 
 - (void)__setUp {
-    _itemsAttributes = [NSMutableDictionary dictionary];
+    _itemsAttributes = [NSMutableArray array];
     _itemReusedPool = [NSMutableDictionary dictionary];
     _visibleItems = [NSMapTable strongToStrongObjectsMapTable];
     _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
@@ -85,7 +87,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     CFRunLoopObserverContext context = {0,(__bridge void*)self,NULL,NULL};
     
     CFRunLoopObserverRef observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
-                                       kCFRunLoopBeforeWaiting | kCFRunLoopExit,
+                                       kCFRunLoopBeforeWaiting,
                                        true,      // repeat
                                        0xFFFFFF,  // after CATransaction(2000000)
                                        __RunLoopObserverCallBack, &context);
@@ -114,7 +116,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
         for (NSUInteger j = 0; j < numberOfItems; j++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
             ARListViewLayoutItemAttributes *attributes = [_layout layoutAttributesAtIndexPath:indexPath];
-            [_itemsAttributes setObject:attributes forKey:indexPath];
+            [self __cachedAttributes:attributes atIndexPath:indexPath];
             //
             CGRect itemFrame = attributes.frame;
             //
@@ -154,13 +156,26 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     return item;
 }
 
+- (NSSet<ARListViewItem *> *)visibleItems {
+    NSMutableSet *visibles = [NSMutableSet set];
+    for (ARListViewItem *item in _visibleItems.keyEnumerator) {
+        [visibles addObject:item];
+    }
+    return visibles;
+}
+
+#warning need to impliment
+- (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
+    
+}
+
 #pragma mark - Private methods
 
 - (void)__setVisibleItem:(__kindof ARListViewItem *)item forIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath {
     [_visibleItems setObject:indexPath forKey:item];
     _ARListItemReusedInfo *info = [[_ARListItemReusedInfo alloc] init];
     info.reuseIdentifier = identifier;
-    info.attribute = _itemsAttributes[indexPath];
+    info.attribute = [self __getCachedAttributesAtIndexPath:indexPath];
     info.indexPath = indexPath;
     info.item = item;
     [_visibleItemInfos setObject:info forKey:indexPath];
@@ -196,11 +211,20 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
         [_visibleItemInfos removeObjectForKey:indexPath];
     }
     // add
-    [_itemsAttributes enumerateKeysAndObjectsUsingBlock:^(NSIndexPath * _Nonnull key, ARListViewLayoutItemAttributes * _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([_visibleItemInfos objectForKey:key] == nil) {// hasn't visible
-            [self __showItemIfNeededWithIndexPath:key attribute:obj];
+    for (NSUInteger i = 0; i < _itemsAttributes.count; i++) {
+        NSMutableArray *array = _itemsAttributes[i];
+        for (NSUInteger j = 0; j < array.count; j++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
+            if ([_visibleItemInfos objectForKey:indexPath] == nil) {// hasn't visible
+                ARListViewLayoutItemAttributes *attr = [self __getCachedAttributesAtIndexPath:indexPath];
+                if (attr == nil) {
+                    attr = [_layout layoutAttributesAtIndexPath:indexPath];
+                    [self __cachedAttributes:attr atIndexPath:indexPath];
+                }
+                [self __showItemIfNeededWithIndexPath:indexPath attribute:attr];
+            }
         }
-    }];
+    }
     //
     [CATransaction commit];
 }
@@ -222,6 +246,50 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     CGRect thresholdRect = CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold);
     return CGRectIntersectsRect(thresholdRect, frame);
 }
+
+#pragma mark - cached attributes handle methods
+
+- (NSMutableArray *)__attributesCachedArrayForSection:(NSUInteger)section {
+    if (section >= _itemsAttributes.count) {
+        for (NSUInteger i = _itemsAttributes.count; i <= section; i++) {
+            [_itemsAttributes addObject:[NSMutableArray array]];
+        }
+    }
+    return _itemsAttributes[section];
+}
+
+- (void)__cachedAttributes:(ARListViewLayoutItemAttributes *)attributes atIndexPath:(NSIndexPath *)indexPath {
+    NSMutableArray *cachedArray = [self __attributesCachedArrayForSection:indexPath.section];
+    if (indexPath.row >= cachedArray.count) {
+        for (NSUInteger i = cachedArray.count; i <= indexPath.row; i++) {
+            [cachedArray addObject:ARListViewInvalidAttributes];
+        }
+    }
+    [cachedArray replaceObjectAtIndex:indexPath.row withObject:attributes];
+}
+
+- (nullable ARListViewLayoutItemAttributes *)__getCachedAttributesAtIndexPath:(NSIndexPath *)indexPath {
+    NSMutableArray *cachedArray = [self __attributesCachedArrayForSection:indexPath.section];
+    if (indexPath.row < cachedArray.count) {
+        return cachedArray[indexPath.row];
+    }
+    return nil;
+}
+
+#pragma mark - event methods
+
+-(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UIView *item = [[touches anyObject] view];
+    if ([item isKindOfClass:[ARListViewItem class]]) {
+        NSIndexPath *selectedIndexPath = [_visibleItems objectForKey:(ARListViewItem *)item];
+        if (selectedIndexPath && [self.delegate respondsToSelector:@selector(listView:didSelectRowAtIndexPath:)]) {
+            [self.delegate listView:self didSelectRowAtIndexPath:selectedIndexPath];
+        }
+    }
+    [super touchesEnded:touches withEvent:event];
+}
+
+#pragma mark - runloop observer
 
 static void __RunLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
     ARListView *listView = (__bridge ARListView *)info;

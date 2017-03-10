@@ -19,17 +19,19 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) ARListViewLayout *layout;
 @property (nonatomic, weak) id<ARListViewDelegate,UIScrollViewDelegate> delegate;
 @property (nonatomic, weak) id<ARListViewDataSource> dataSource;
+@property (nonatomic, readonly) NSSet<__kindof ARListViewItem *> *visibleItems;
 
 - (instancetype)initWithLayout:(ARListViewLayout *)layout NS_DESIGNATED_INITIALIZER;
+//
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
 - (void)reloadData;
 - (nullable ARListViewLayoutItemAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)registerClass:(Class)itemClass forCellReuseIdentifier:(nonnull NSString *)identifier;
 - (__kindof ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath;
 //
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
-
+- (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
 @end
 
 @protocol ARListViewDataSource <NSObject>
@@ -43,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol ARListViewDelegate <NSObject>
+@protocol ARListViewDelegate <NSObject,UIScrollViewDelegate>
 
 @optional
 - (void)listView:(ARListView *)listView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;

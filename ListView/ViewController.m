@@ -11,7 +11,7 @@
 #import "ListViewItem1.h"
 #import "ListViewItem2.h"
 
-@interface ViewController ()<ARListViewDataSource,ARListViewFlowLayoutDelegate>
+@interface ViewController ()<ARListViewDataSource,ARListViewFlowLayoutDelegate,ARListViewDelegate>
 
 @end
 
@@ -22,6 +22,7 @@
     ARListView *listView = [[ARListView alloc] initWithLayout:flowLayout];
     listView.backgroundColor = [UIColor purpleColor];
     listView.dataSource = self;
+    listView.delegate = self;
     [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];
     [listView registerClass:[ListViewItem2 class] forCellReuseIdentifier:@"item2"];
     self.view = listView;
@@ -60,6 +61,13 @@
         listViewItem = item;
     }
     return listViewItem;
+}
+
+#pragma mark - ARListViewDelegate methods
+
+- (void)listView:(ARListView *)listView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"did selected row at %@",indexPath);
+    [listView reloadData];
 }
 
 #pragma mark - ARListViewFlowLayoutDelegate methods
