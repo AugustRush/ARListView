@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable ARListViewLayoutItemAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)registerClass:(Class)itemClass forCellReuseIdentifier:(nonnull NSString *)identifier;
 - (__kindof ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath;
-
+//
 - (NSUInteger)numberOfSections;
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
 //
@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 - (void)listView:(ARListView *)listView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)listView:(ARListView *)listView willDisplayItem:(ARListViewItem *)item forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
