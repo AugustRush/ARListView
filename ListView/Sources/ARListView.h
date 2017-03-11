@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) ARListViewLayout *layout;
 @property (nonatomic, weak) id<ARListViewDelegate,UIScrollViewDelegate> delegate;
 @property (nonatomic, weak) id<ARListViewDataSource> dataSource;
-@property (nonatomic, readonly) NSSet<__kindof ARListViewItem *> *visibleItems;
 
 - (instancetype)initWithLayout:(ARListViewLayout *)layout NS_DESIGNATED_INITIALIZER;
 //
@@ -27,9 +26,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
 - (void)reloadData;
+- (NSSet<ARListViewItem *> *)visibleItems;
+- (NSSet<NSIndexPath *> *)indexPathsForVisibleItems;
 - (nullable ARListViewLayoutItemAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)registerClass:(Class)itemClass forCellReuseIdentifier:(nonnull NSString *)identifier;
 - (__kindof ARListViewItem *)dequeueReusableItemWithIdentifier:(NSString *)identifier indexPath:(NSIndexPath *)indexPath;
+
+- (NSUInteger)numberOfSections;
+- (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
 //
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
 @end

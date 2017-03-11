@@ -147,6 +147,22 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     return visibles;
 }
 
+- (NSSet<NSIndexPath *> *)indexPathsForVisibleItems {
+    NSMutableSet *indexPaths = [NSMutableSet set];
+    for (NSIndexPath *indexPath in _visibleItems.objectEnumerator) {
+        [indexPaths addObject:indexPath];
+    }
+    return indexPaths;
+}
+
+- (NSUInteger)numberOfSections {
+    return [_dataSource numberOfSectionsInListView:self];
+}
+
+- (NSUInteger)numberOfItemsInSection:(NSUInteger)section {
+    return [_dataSource listView:self numberOfItemsInSection:section];
+}
+
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     for (NSIndexPath *indexPath in indexPaths) {
         ARListViewLayoutItemAttributes *attr = [_layout layoutAttributesAtIndexPath:indexPath];
