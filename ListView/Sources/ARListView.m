@@ -20,7 +20,6 @@
 
 @interface _ARListItemReusedInfo : NSObject
 
-@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, weak) ARListViewLayoutItemAttributes *attribute;
 @property (nonatomic, copy) NSString *reuseIdentifier;
 @property (nonatomic, strong) __kindof ARListViewItem *item;
@@ -148,7 +147,6 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     return visibles;
 }
 
-#warning need to impliment
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     for (NSIndexPath *indexPath in indexPaths) {
         ARListViewLayoutItemAttributes *attr = [_layout layoutAttributesAtIndexPath:indexPath];
@@ -161,7 +159,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 
 - (void)__setUp {
     _itemReusedPool = [NSMutableDictionary dictionary];
-    _visibleItems = [NSMapTable weakToWeakObjectsMapTable];
+    _visibleItems = [NSMapTable weakToStrongObjectsMapTable];
     _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
     _registedItemClasses = [NSMutableDictionary dictionary];
     CFRunLoopRef runloop = CFRunLoopGetMain();
@@ -184,7 +182,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 }
 
 - (void)__clear {
-    for (ARListViewItem *item in _visibleItems) {
+    for (ARListViewItem *item in _visibleItems.keyEnumerator) {
         [item removeFromSuperview];
     }
     [_visibleItemInfos removeAllObjects];
@@ -195,7 +193,6 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     _ARListItemReusedInfo *info = [[_ARListItemReusedInfo alloc] init];
     info.reuseIdentifier = identifier;
     info.attribute = [_layout __getCachedAttributesAtIndexPath:indexPath];
-    info.indexPath = indexPath;
     info.item = item;
     [_visibleItemInfos setObject:info forKey:indexPath];
 }
@@ -226,12 +223,12 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     }
     // remove infos
     for (NSIndexPath *indexPath in removes) {
-        NSLog(@"REmove ----> %ld %ld",[indexPath section],[indexPath row]);
+        NSLog(@"Remove ----> %ld %ld",[indexPath section],[indexPath row]);
         [_visibleItemInfos removeObjectForKey:indexPath];
     }
     // add
-    NSArray *attributesForRect = [_layout layoutAttributesForElementsInRect:[self __currentBounds]];
-    for (ARListViewLayoutItemAttributes *attr in attributesForRect) {
+    NSArray *attributesInRect = [_layout layoutAttributesForElementsInRect:[self __currentBounds]];
+    for (ARListViewLayoutItemAttributes *attr in attributesInRect) {
         if ([_visibleItemInfos objectForKey:attr.indexPath] == nil) {
             [self __showItemIfNeededWithAttribute:attr];
         }
@@ -241,11 +238,13 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 }
 
 - (void)__showItemIfNeededWithAttribute:(ARListViewLayoutItemAttributes *)attr {
-    __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:attr.indexPath];
-    item.frame = attr.frame;
-    item.layer.zPosition = attr.zIndex;
-    [self addSubview:item];
-    NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
+    if ([self __selfBoundsIsContainedFrame:attr.frame] && !attr.isHidden) {
+        __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:attr.indexPath];
+        item.frame = attr.frame;
+        item.layer.zPosition = attr.zIndex;
+        [self addSubview:item];
+        NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
+    }
 }
 
 #define __ARListScrollInsetThreshold -40.0
