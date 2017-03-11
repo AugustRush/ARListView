@@ -18,8 +18,6 @@
 #define NSLog(...)
 #endif
 
-#define ARListViewInvalidAttributes @0
-
 @interface _ARListItemReusedInfo : NSObject
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
@@ -37,6 +35,9 @@
 @interface ARListViewLayout (ARPrivate)
 
 - (void)setListView:(ARListView *)listView;
+- (NSMutableArray *)__attributesCachedArrayForSection:(NSUInteger)section;
+- (void)__cachedAttributes:(ARListViewLayoutItemAttributes *)attributes atIndexPath:(NSIndexPath *)indexPath;
+- (nullable ARListViewLayoutItemAttributes *)__getCachedAttributesAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -52,7 +53,6 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 
 @implementation ARListView {
     ARListViewLayout *_layout;
-    NSMutableArray<NSMutableArray *> *_itemsAttributes;
     NSMutableDictionary<NSString *,REUSED_SET> *_itemReusedPool;
     NSMapTable<__kindof ARListViewItem *,NSIndexPath *> *_visibleItems;
     NSMapTable<NSIndexPath *,_ARListItemReusedInfo *> *_visibleItemInfos;
@@ -100,7 +100,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
         for (NSUInteger j = 0; j < numberOfItems; j++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
             ARListViewLayoutItemAttributes *attributes = [_layout layoutAttributesAtIndexPath:indexPath];
-            [self __cachedAttributes:attributes atIndexPath:indexPath];
+            [_layout __cachedAttributes:attributes atIndexPath:indexPath];
             //
             CGRect itemFrame = attributes.frame;
             //
@@ -109,7 +109,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
             minY = MIN(minY, CGRectGetMinY(itemFrame));
             maxY = MAX(maxY, CGRectGetMaxY(itemFrame));
             //
-            [self __showItemIfNeededWithIndexPath:indexPath attribute:attributes];
+            [self __showItemIfNeededWithAttribute:attributes];
         }
     }
     totalWidth = totalWidth + (maxX - minX);
@@ -152,7 +152,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     for (NSIndexPath *indexPath in indexPaths) {
         ARListViewLayoutItemAttributes *attr = [_layout layoutAttributesAtIndexPath:indexPath];
-        [self __cachedAttributes:attr atIndexPath:indexPath];
+        [_layout __cachedAttributes:attr atIndexPath:indexPath];
         [self reloadData];
     }
 }
@@ -160,7 +160,6 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 #pragma mark - Private methods
 
 - (void)__setUp {
-    _itemsAttributes = [NSMutableArray array];
     _itemReusedPool = [NSMutableDictionary dictionary];
     _visibleItems = [NSMapTable weakToWeakObjectsMapTable];
     _visibleItemInfos = [NSMapTable strongToStrongObjectsMapTable];
@@ -195,7 +194,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     [_visibleItems setObject:indexPath forKey:item];
     _ARListItemReusedInfo *info = [[_ARListItemReusedInfo alloc] init];
     info.reuseIdentifier = identifier;
-    info.attribute = [self __getCachedAttributesAtIndexPath:indexPath];
+    info.attribute = [_layout __getCachedAttributesAtIndexPath:indexPath];
     info.indexPath = indexPath;
     info.item = item;
     [_visibleItemInfos setObject:info forKey:indexPath];
@@ -231,69 +230,34 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
         [_visibleItemInfos removeObjectForKey:indexPath];
     }
     // add
-    for (NSUInteger i = 0; i < _itemsAttributes.count; i++) {
-        NSMutableArray *array = _itemsAttributes[i];
-        for (NSUInteger j = 0; j < array.count; j++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
-            if ([_visibleItemInfos objectForKey:indexPath] == nil) {// hasn't visible
-                ARListViewLayoutItemAttributes *attr = [self __getCachedAttributesAtIndexPath:indexPath];
-                if (attr == nil) {
-                    attr = [_layout layoutAttributesAtIndexPath:indexPath];
-                    [self __cachedAttributes:attr atIndexPath:indexPath];
-                }
-                [self __showItemIfNeededWithIndexPath:indexPath attribute:attr];
-            }
+    NSArray *attributesForRect = [_layout layoutAttributesForElementsInRect:[self __currentBounds]];
+    for (ARListViewLayoutItemAttributes *attr in attributesForRect) {
+        if ([_visibleItemInfos objectForKey:attr.indexPath] == nil) {
+            [self __showItemIfNeededWithAttribute:attr];
         }
     }
     //
     [CATransaction commit];
 }
 
-- (void)__showItemIfNeededWithIndexPath:(NSIndexPath *)indexPath attribute:(ARListViewLayoutItemAttributes *)attr {
-    //
-    if ([self __selfBoundsIsContainedFrame:attr.frame]) {
-        __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:indexPath];
-        item.frame = attr.frame;
-        item.layer.zPosition = attr.zIndex;
-        [self addSubview:item];
-        NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
-    }
+- (void)__showItemIfNeededWithAttribute:(ARListViewLayoutItemAttributes *)attr {
+    __kindof ARListViewItem *item = [self.dataSource listView:self itemAtIndexPath:attr.indexPath];
+    item.frame = attr.frame;
+    item.layer.zPosition = attr.zIndex;
+    [self addSubview:item];
+    NSLog(@"add ----> [%ld  %ld]",indexPath.section,indexPath.row);
 }
 
 #define __ARListScrollInsetThreshold -40.0
 
 - (BOOL)__selfBoundsIsContainedFrame:(CGRect)frame {
-    CGRect thresholdRect = CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold);
+    CGRect thresholdRect = [self __currentBounds];
     return CGRectIntersectsRect(thresholdRect, frame);
 }
 
-#pragma mark - cached attributes handle methods
-
-- (NSMutableArray *)__attributesCachedArrayForSection:(NSUInteger)section {
-    if (section >= _itemsAttributes.count) {
-        for (NSUInteger i = _itemsAttributes.count; i <= section; i++) {
-            [_itemsAttributes addObject:[NSMutableArray array]];
-        }
-    }
-    return _itemsAttributes[section];
-}
-
-- (void)__cachedAttributes:(ARListViewLayoutItemAttributes *)attributes atIndexPath:(NSIndexPath *)indexPath {
-    NSMutableArray *cachedArray = [self __attributesCachedArrayForSection:indexPath.section];
-    if (indexPath.row >= cachedArray.count) {
-        for (NSUInteger i = cachedArray.count; i <= indexPath.row; i++) {
-            [cachedArray addObject:ARListViewInvalidAttributes];
-        }
-    }
-    [cachedArray replaceObjectAtIndex:indexPath.row withObject:attributes];
-}
-
-- (nullable ARListViewLayoutItemAttributes *)__getCachedAttributesAtIndexPath:(NSIndexPath *)indexPath {
-    NSMutableArray *cachedArray = [self __attributesCachedArrayForSection:indexPath.section];
-    if (indexPath.row < cachedArray.count) {
-        return cachedArray[indexPath.row];
-    }
-    return nil;
+- (CGRect)__currentBounds {
+    CGRect thresholdRect = CGRectInset(self.bounds, __ARListScrollInsetThreshold, __ARListScrollInsetThreshold);
+    return thresholdRect;
 }
 
 #pragma mark - event methods

@@ -11,7 +11,9 @@
 
 @interface ARListViewLayoutItemAttributes : NSObject
 
+@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) CGFloat zIndex;
+@property (nonatomic, getter=isHidden) BOOL hidden; // As an optimization, ARListView might not create a view for items whose hidden attribute is YES
 
 @end
