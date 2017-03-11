@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray<__kindof ARListViewLayoutItemAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect;
 - (ARListViewLayoutItemAttributes *)layoutAttributesAtIndexPath:(NSIndexPath *)indexPath;
 - (void)finishedLayout;
+//
+- (CGSize)listViewContentSize;
 
 @end
 

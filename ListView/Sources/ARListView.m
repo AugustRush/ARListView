@@ -9,6 +9,7 @@
 #import "ARListView.h"
 #import "ARListViewFlowLayout.h"
 #import "ARListViewLayoutItemAttributes.h"
+#import "ARListViewLayout+Private.h"
 
 #define DEBUG_LOG 0
 
@@ -30,18 +31,6 @@
 
 @end
 
-////
-@interface ARListViewLayout (ARPrivate)
-
-- (void)setListView:(ARListView *)listView;
-- (NSMutableArray *)__attributesCachedArrayForSection:(NSUInteger)section;
-- (void)__cachedAttributes:(ARListViewLayoutItemAttributes *)attributes atIndexPath:(NSIndexPath *)indexPath;
-- (nullable ARListViewLayoutItemAttributes *)__getCachedAttributesAtIndexPath:(NSIndexPath *)indexPath;
-
-@end
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-@implementation ARListViewLayout (ARPrivate)
-@end
 /////
 
 typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
@@ -84,36 +73,8 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 - (void)reloadData {
     [_layout preparedLayout];
     [self __clear];
-    NSUInteger sections = 1;
-    if ([self.dataSource respondsToSelector:@selector(numberOfSectionsInListView:)]) {
-        sections = [self.dataSource numberOfSectionsInListView:self];
-    }
-    CGFloat minX = 0.0;
-    CGFloat maxX = 0.0;
-    CGFloat minY = 0.0;
-    CGFloat maxY = 0.0;
-    CGFloat totalWidth = self.contentInset.left + self.contentInset.right;
-    CGFloat totalHeight = self.contentInset.top + self.contentInset.bottom;
-    for (NSUInteger i = 0; i < sections; i++) {
-        NSUInteger numberOfItems = [self.dataSource listView:self numberOfItemsInSection:i];
-        for (NSUInteger j = 0; j < numberOfItems; j++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
-            ARListViewLayoutItemAttributes *attributes = [_layout layoutAttributesAtIndexPath:indexPath];
-            [_layout __cachedAttributes:attributes atIndexPath:indexPath];
-            //
-            CGRect itemFrame = attributes.frame;
-            //
-            minX = MIN(minX, CGRectGetMinX(itemFrame));
-            maxX = MAX(maxX, CGRectGetMaxX(itemFrame));
-            minY = MIN(minY, CGRectGetMinY(itemFrame));
-            maxY = MAX(maxY, CGRectGetMaxY(itemFrame));
-            //
-            [self __showItemIfNeededWithAttribute:attributes];
-        }
-    }
-    totalWidth = totalWidth + (maxX - minX);
-    totalHeight = totalHeight + (maxY - minY);
-    self.contentSize = CGSizeMake(totalWidth, totalHeight);
+    CGSize contentSize = [_layout listViewContentSize];
+    [self setContentSize:contentSize];
     [_layout finishedLayout];
 }
 
@@ -156,6 +117,9 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
 }
 
 - (NSUInteger)numberOfSections {
+    if (![_dataSource respondsToSelector:@selector(numberOfSectionsInListView:)]) {
+        return 1;
+    }
     return [_dataSource numberOfSectionsInListView:self];
 }
 
@@ -183,9 +147,8 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     
     CFRunLoopObserverRef observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
                                                             kCFRunLoopBeforeWaiting,
-                                                            true,      // repeat
-                                                            0xFFFFFF,  // after CATransaction(2000000)
-                                                            __RunLoopObserverCallBack, &context);
+                                                            true,
+                                                            0,__RunLoopObserverCallBack, &context);
     CFRunLoopAddObserver(runloop, observer, kCFRunLoopCommonModes);
     CFRelease(observer);
 }

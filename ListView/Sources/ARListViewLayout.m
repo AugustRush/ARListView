@@ -9,6 +9,7 @@
 #import "ARListViewLayout.h"
 #import "ARListViewLayoutItemAttributes.h"
 #import "ARListView.h"
+#import "ARListView+Private.h"
 
 #define ARListViewInvalidAttributes @0
 
@@ -65,7 +66,35 @@
     _listView = listView;
 }
 
-#pragma mark - Private methods
+- (CGSize)listViewContentSize {
+    NSUInteger sections = [_listView numberOfSections];
+    CGFloat minX = 0.0;
+    CGFloat maxX = 0.0;
+    CGFloat minY = 0.0;
+    CGFloat maxY = 0.0;
+    CGFloat totalWidth = _listView.contentInset.left + _listView.contentInset.right;
+    CGFloat totalHeight = _listView.contentInset.top + _listView.contentInset.bottom;
+    for (NSUInteger i = 0; i < sections; i++) {
+        NSUInteger numberOfItems = [_listView numberOfItemsInSection:i];
+        for (NSUInteger j = 0; j < numberOfItems; j++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
+            ARListViewLayoutItemAttributes *attributes = [self layoutAttributesAtIndexPath:indexPath];
+            [self __cachedAttributes:attributes atIndexPath:indexPath];
+            //
+            CGRect itemFrame = attributes.frame;
+            //
+            minX = MIN(minX, CGRectGetMinX(itemFrame));
+            maxX = MAX(maxX, CGRectGetMaxX(itemFrame));
+            minY = MIN(minY, CGRectGetMinY(itemFrame));
+            maxY = MAX(maxY, CGRectGetMaxY(itemFrame));
+            //
+            [_listView __showItemIfNeededWithAttribute:attributes];
+        }
+    }
+    totalWidth = totalWidth + (maxX - minX);
+    totalHeight = totalHeight + (maxY - minY);
+    return CGSizeMake(totalWidth, totalHeight);
+}
 
 #pragma mark - cached attributes handle methods
 
