@@ -8,7 +8,6 @@
  */
 
 #import "YGLayout+Private.h"
-#import "UIView+Yoga.h"
 
 #define YG_PROPERTY(type, lowercased_name, capitalized_name)    \
 - (type)lowercased_name                                         \
@@ -150,21 +149,6 @@ static YGConfigRef globalConfig;
   return YGNodeGetChildCount(self.node);
 }
 
-//- (BOOL)isLeaf
-//{
-//  NSAssert([NSThread isMainThread], @"This method must be called on the main thread.");
-//  if (self.isEnabled) {
-//    for (UIView *subview in self.view.subviews) {
-//      YGLayout *const yoga = subview.yoga;
-//      if (yoga.isEnabled && yoga.isIncludedInLayout) {
-//        return NO;
-//      }
-//    }
-//  }
-//
-//  return YES;
-//}
-
 #pragma mark - Style
 
 - (YGPositionType)position
@@ -280,8 +264,8 @@ static YGSize YGMeasureView(
   const CGFloat constrainedWidth = (widthMode == YGMeasureModeUndefined) ? CGFLOAT_MAX : width;
   const CGFloat constrainedHeight = (heightMode == YGMeasureModeUndefined) ? CGFLOAT_MAX: height;
 
-  UIView *view = (__bridge UIView*) YGNodeGetContext(node);
-  const CGSize sizeThatFits = [view sizeThatFits:(CGSize) {
+  id<YogaLayoutable> view = (__bridge id<YogaLayoutable>) YGNodeGetContext(node);
+  const CGSize sizeThatFits = [view measureSizeThatFitsSize:(CGSize) {
     .width = constrainedWidth,
     .height = constrainedHeight,
   }];
@@ -350,7 +334,7 @@ static void YGAttachNodesFromViewHierachy(id<YogaLayoutable> const view)
       }
     }
 
-    for (UIView *const subview in subviewsToInclude) {
+    for (id<YogaLayoutable> const subview in subviewsToInclude) {
       YGAttachNodesFromViewHierachy(subview);
     }
   }

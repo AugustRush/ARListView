@@ -33,6 +33,11 @@ static const void *kYGYogaAssociatedKey = &kYGYogaAssociatedKey;
   }
 }
 
+- (CGSize)measureSizeThatFitsSize:(CGSize)size {
+    NSAssert([NSThread isMainThread], @"This method must be called on the main thread.");
+    return [self sizeThatFits:size];
+}
+
 - (BOOL)isLeaf
 {
     NSAssert([NSThread isMainThread], @"This method must be called on the main thread.");

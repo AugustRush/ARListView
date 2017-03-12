@@ -10,12 +10,17 @@
 #import <UIKit/UIKit.h>
 
 @class YGLayout;
+typedef void (^YGLayoutConfigurationBlock)(YGLayout *);
+//
 @protocol YogaLayoutable <NSObject>
 
 @property (nonatomic, readonly, strong) YGLayout *yoga;
 @property (nonatomic) CGRect frame;
 @property (nonatomic, readonly, assign) BOOL isLeaf;
-@property (nonatomic, assign) BOOL isEnableLayout;
 @property (nonatomic, readonly) NSArray<id<YogaLayoutable>> *leafNodes;
+
+- (void)configureLayoutWithBlock:(YGLayoutConfigurationBlock)block
+NS_SWIFT_NAME(configureLayout(block:));
+- (CGSize)measureSizeThatFitsSize:(CGSize)size NS_SWIFT_NAME(measureSize(fitsSize:));
 
 @end

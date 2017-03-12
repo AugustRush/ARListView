@@ -13,6 +13,7 @@
 		9744914F1E7522A0006408B2 /* YGNodeList.c in Sources */ = {isa = PBXBuildFile; fileRef = 974491491E7522A0006408B2 /* YGNodeList.c */; };
 		974491501E7522A0006408B2 /* Yoga.c in Sources */ = {isa = PBXBuildFile; fileRef = 9744914B1E7522A0006408B2 /* Yoga.c */; };
 		974491551E752324006408B2 /* UIView+Yoga.m in Sources */ = {isa = PBXBuildFile; fileRef = 974491531E752324006408B2 /* UIView+Yoga.m */; };
+		974491581E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.m in Sources */ = {isa = PBXBuildFile; fileRef = 974491571E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.m */; };
 		977151941E6EF67A002CCAFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151931E6EF67A002CCAFC /* main.m */; };
 		977151971E6EF67A002CCAFC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151961E6EF67A002CCAFC /* AppDelegate.m */; };
 		9771519A1E6EF67A002CCAFC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151991E6EF67A002CCAFC /* ViewController.m */; };
@@ -45,6 +46,8 @@
 		974491521E752324006408B2 /* UIView+Yoga.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Yoga.h"; sourceTree = "<group>"; };
 		974491531E752324006408B2 /* UIView+Yoga.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Yoga.m"; sourceTree = "<group>"; };
 		974491541E752324006408B2 /* YogaLayoutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YogaLayoutable.h; sourceTree = "<group>"; };
+		974491561E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ARListViewLayoutItemAttributes+Yoga.h"; sourceTree = "<group>"; };
+		974491571E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ARListViewLayoutItemAttributes+Yoga.m"; sourceTree = "<group>"; };
 		9771518F1E6EF67A002CCAFC /* ListView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		977151931E6EF67A002CCAFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		977151951E6EF67A002CCAFC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -112,6 +115,8 @@
 				974491521E752324006408B2 /* UIView+Yoga.h */,
 				974491531E752324006408B2 /* UIView+Yoga.m */,
 				974491541E752324006408B2 /* YogaLayoutable.h */,
+				974491561E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.h */,
+				974491571E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.m */,
 			);
 			path = extension;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 				977151B81E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m in Sources */,
 				974491551E752324006408B2 /* UIView+Yoga.m in Sources */,
 				977151B51E6F007A002CCAFC /* ARListViewFlowLayout.m in Sources */,
+				974491581E75248D006408B2 /* ARListViewLayoutItemAttributes+Yoga.m in Sources */,
 				974490F11E73DA0B006408B2 /* RootViewController.m in Sources */,
 				9744914E1E7522A0006408B2 /* YGLayout.m in Sources */,
 			);

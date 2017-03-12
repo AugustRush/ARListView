@@ -13,8 +13,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^YGLayoutConfigurationBlock)(YGLayout *);
-
 @interface UIView (Yoga)<YogaLayoutable>
 
 /**
