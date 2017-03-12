@@ -9,7 +9,6 @@
 #import "ARListViewLayout.h"
 #import "ARListViewLayoutItemAttributes.h"
 #import "ARListView.h"
-#import "ARListView+Private.h"
 
 #define ARListViewInvalidAttributes @0
 
@@ -87,8 +86,6 @@
             maxX = MAX(maxX, CGRectGetMaxX(itemFrame));
             minY = MIN(minY, CGRectGetMinY(itemFrame));
             maxY = MAX(maxY, CGRectGetMaxY(itemFrame));
-            //
-            [_listView __showItemIfNeededWithAttribute:attributes];
         }
     }
     totalWidth = totalWidth + (maxX - minX);
