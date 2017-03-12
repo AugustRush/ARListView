@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		974490F11E73DA0B006408B2 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 974490F01E73DA0B006408B2 /* RootViewController.m */; };
+		974490F41E73EC48006408B2 /* ARListViewYogaLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 974490F31E73EC48006408B2 /* ARListViewYogaLayout.m */; };
+		9744914E1E7522A0006408B2 /* YGLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 974491471E7522A0006408B2 /* YGLayout.m */; };
+		9744914F1E7522A0006408B2 /* YGNodeList.c in Sources */ = {isa = PBXBuildFile; fileRef = 974491491E7522A0006408B2 /* YGNodeList.c */; };
+		974491501E7522A0006408B2 /* Yoga.c in Sources */ = {isa = PBXBuildFile; fileRef = 9744914B1E7522A0006408B2 /* Yoga.c */; };
+		974491551E752324006408B2 /* UIView+Yoga.m in Sources */ = {isa = PBXBuildFile; fileRef = 974491531E752324006408B2 /* UIView+Yoga.m */; };
 		977151941E6EF67A002CCAFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151931E6EF67A002CCAFC /* main.m */; };
 		977151971E6EF67A002CCAFC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151961E6EF67A002CCAFC /* AppDelegate.m */; };
 		9771519A1E6EF67A002CCAFC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 977151991E6EF67A002CCAFC /* ViewController.m */; };
@@ -23,6 +29,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		974490EF1E73DA0B006408B2 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		974490F01E73DA0B006408B2 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		974490F21E73EC48006408B2 /* ARListViewYogaLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARListViewYogaLayout.h; sourceTree = "<group>"; };
+		974490F31E73EC48006408B2 /* ARListViewYogaLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARListViewYogaLayout.m; sourceTree = "<group>"; };
+		974491441E7522A0006408B2 /* YGEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YGEnums.h; sourceTree = "<group>"; };
+		974491451E7522A0006408B2 /* YGLayout+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YGLayout+Private.h"; sourceTree = "<group>"; };
+		974491461E7522A0006408B2 /* YGLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YGLayout.h; sourceTree = "<group>"; };
+		974491471E7522A0006408B2 /* YGLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YGLayout.m; sourceTree = "<group>"; };
+		974491481E7522A0006408B2 /* YGMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YGMacros.h; sourceTree = "<group>"; };
+		974491491E7522A0006408B2 /* YGNodeList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = YGNodeList.c; sourceTree = "<group>"; };
+		9744914A1E7522A0006408B2 /* YGNodeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YGNodeList.h; sourceTree = "<group>"; };
+		9744914B1E7522A0006408B2 /* Yoga.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Yoga.c; sourceTree = "<group>"; };
+		9744914C1E7522A0006408B2 /* Yoga.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yoga.h; sourceTree = "<group>"; };
+		974491521E752324006408B2 /* UIView+Yoga.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Yoga.h"; sourceTree = "<group>"; };
+		974491531E752324006408B2 /* UIView+Yoga.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Yoga.m"; sourceTree = "<group>"; };
+		974491541E752324006408B2 /* YogaLayoutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YogaLayoutable.h; sourceTree = "<group>"; };
 		9771518F1E6EF67A002CCAFC /* ListView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		977151931E6EF67A002CCAFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		977151951E6EF67A002CCAFC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -60,6 +82,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		974490DE1E73D6B5006408B2 /* YogaKit */ = {
+			isa = PBXGroup;
+			children = (
+				9744913F1E7522A0006408B2 /* yoga */,
+			);
+			name = YogaKit;
+			sourceTree = "<group>";
+		};
+		9744913F1E7522A0006408B2 /* yoga */ = {
+			isa = PBXGroup;
+			children = (
+				974491441E7522A0006408B2 /* YGEnums.h */,
+				974491451E7522A0006408B2 /* YGLayout+Private.h */,
+				974491461E7522A0006408B2 /* YGLayout.h */,
+				974491471E7522A0006408B2 /* YGLayout.m */,
+				974491481E7522A0006408B2 /* YGMacros.h */,
+				974491491E7522A0006408B2 /* YGNodeList.c */,
+				9744914A1E7522A0006408B2 /* YGNodeList.h */,
+				9744914B1E7522A0006408B2 /* Yoga.c */,
+				9744914C1E7522A0006408B2 /* Yoga.h */,
+			);
+			path = yoga;
+			sourceTree = "<group>";
+		};
+		974491511E752324006408B2 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				974491521E752324006408B2 /* UIView+Yoga.h */,
+				974491531E752324006408B2 /* UIView+Yoga.m */,
+				974491541E752324006408B2 /* YogaLayoutable.h */,
+			);
+			path = extension;
+			sourceTree = "<group>";
+		};
 		977151861E6EF67A002CCAFC = {
 			isa = PBXGroup;
 			children = (
@@ -79,9 +135,13 @@
 		977151911E6EF67A002CCAFC /* ListView */ = {
 			isa = PBXGroup;
 			children = (
+				974491511E752324006408B2 /* extension */,
+				974490DE1E73D6B5006408B2 /* YogaKit */,
 				977151A91E6EF696002CCAFC /* Sources */,
 				977151951E6EF67A002CCAFC /* AppDelegate.h */,
 				977151961E6EF67A002CCAFC /* AppDelegate.m */,
+				974490EF1E73DA0B006408B2 /* RootViewController.h */,
+				974490F01E73DA0B006408B2 /* RootViewController.m */,
 				977151981E6EF67A002CCAFC /* ViewController.h */,
 				977151991E6EF67A002CCAFC /* ViewController.m */,
 				977151D91E6FDE4D002CCAFC /* ListViewItem1.h */,
@@ -116,6 +176,8 @@
 				977151D71E6FB412002CCAFC /* ARListViewLayout.m */,
 				977151B31E6F007A002CCAFC /* ARListViewFlowLayout.h */,
 				977151B41E6F007A002CCAFC /* ARListViewFlowLayout.m */,
+				974490F21E73EC48006408B2 /* ARListViewYogaLayout.h */,
+				974490F31E73EC48006408B2 /* ARListViewYogaLayout.m */,
 				977151B61E6F0414002CCAFC /* ARListViewLayoutItemAttributes.h */,
 				977151B71E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m */,
 			);
@@ -201,9 +263,15 @@
 				977151DE1E6FDE5F002CCAFC /* ListViewItem2.m in Sources */,
 				977151971E6EF67A002CCAFC /* AppDelegate.m in Sources */,
 				977151941E6EF67A002CCAFC /* main.m in Sources */,
+				974491501E7522A0006408B2 /* Yoga.c in Sources */,
+				974490F41E73EC48006408B2 /* ARListViewYogaLayout.m in Sources */,
+				9744914F1E7522A0006408B2 /* YGNodeList.c in Sources */,
 				977151D81E6FB412002CCAFC /* ARListViewLayout.m in Sources */,
 				977151B81E6F0414002CCAFC /* ARListViewLayoutItemAttributes.m in Sources */,
+				974491551E752324006408B2 /* UIView+Yoga.m in Sources */,
 				977151B51E6F007A002CCAFC /* ARListViewFlowLayout.m in Sources */,
+				974490F11E73DA0B006408B2 /* RootViewController.m in Sources */,
+				9744914E1E7522A0006408B2 /* YGLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +430,7 @@
 				977151A81E6EF67A002CCAFC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -87,4 +87,18 @@
     return CGSizeMake(300, 40 + indexPath.row);
 }
 
+//- (void)listView:(ARListView *)listView willDisplayItem:(ARListViewItem *)item forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    CGRect frame = item.frame;
+//    BOOL isBottom = CGRectGetMaxY(frame) > CGRectGetMidY(listView.bounds);
+//    item.frame = CGRectOffset(frame, 0, isBottom ? 500: -500);
+//    [UIView animateWithDuration:0.6
+//                          delay:0.0
+//         usingSpringWithDamping:0.8
+//          initialSpringVelocity:0.5
+//                        options:UIViewAnimationOptionAllowUserInteraction
+//                     animations:^{
+//                         item.frame = frame;
+//                     } completion:nil];
+//}
+
 @end
