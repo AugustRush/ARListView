@@ -86,16 +86,16 @@
 #pragma mark - ARListViewYogaLayoutDelegate methods
 
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationWithLayout:(YGLayout *)layout {
-    layout.maxWidth = 320;
+    layout.maxWidth = CGRectGetWidth(self.view.bounds);
     layout.flexDirection = YGFlexDirectionRow;
     layout.justifyContent = YGJustifyFlexStart;
-    layout.alignContent = YGAlignFlexStart;
+    layout.alignContent = YGAlignCenter;
     layout.alignItems = YGAlignFlexStart;
     layout.flexWrap = YGWrapWrap;
 }
 
 - (CGSize)yogaLayout:(ARListViewYogaLayout *)yogaLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake( 60 , 40);
+    return CGSizeMake( 100 + (indexPath.row%2) * 50 ,100 + (indexPath.row%2) * 50);
 }
 
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationForItemAtIndexPath:(NSIndexPath *)indexPath itemLayout:(YGLayout *)layout {

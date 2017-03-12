@@ -75,6 +75,7 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     [self __clear];
     CGSize contentSize = [_layout listViewContentSize];
     [self setContentSize:contentSize];
+    [self __didScroll];
     [_layout finishedLayout];
 }
 
