@@ -41,14 +41,9 @@
         for (NSUInteger j = 0; j < numberOfItems; j++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
             ARListViewLayoutItemAttributes *attributes = [[ARListViewLayoutItemAttributes alloc] init];
-            CGSize size = [_delegate yogaLayout:self sizeForItemAtIndexPath:indexPath];
-            attributes.frame = (CGRect){.origin = CGPointZero,
-                                        .size = size};
-            attributes.yoga.isEnabled = YES;
-            attributes.yoga.margin = 10;
-            if ([_delegate respondsToSelector:@selector(yogaLayout:configurationForItemAtIndexPath:itemLayout:)]) {
-                [_delegate yogaLayout:self configurationForItemAtIndexPath:indexPath itemLayout:attributes.yoga];
-            }
+            YGLayout *itemLayout = attributes.yoga;
+            itemLayout.isEnabled = YES;
+            [_delegate yogaLayout:self configurationForItemAtIndexPath:indexPath itemLayout:itemLayout];
             [self __cachedAttributes:attributes atIndexPath:indexPath];
             //
             [_rootLayoutAttributes addLeafAttributes:attributes];

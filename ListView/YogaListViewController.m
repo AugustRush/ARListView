@@ -22,7 +22,7 @@
 - (void)loadView {
     ARListViewYogaLayout *yogaLayout = [[ARListViewYogaLayout alloc] initWithDelegate:self];
     ARListView *listView = [[ARListView alloc] initWithLayout:yogaLayout];
-    listView.backgroundColor = [UIColor purpleColor];
+    listView.backgroundColor = [UIColor whiteColor];
     listView.dataSource = self;
     listView.delegate = self;
     [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];
@@ -88,19 +88,17 @@
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationWithLayout:(YGLayout *)layout {
     layout.maxWidth = CGRectGetWidth(self.view.bounds);
     layout.flexDirection = YGFlexDirectionRow;
-    layout.justifyContent = YGJustifyFlexStart;
+    layout.justifyContent = YGJustifyCenter;
     layout.alignContent = YGAlignCenter;
     layout.alignItems = YGAlignFlexStart;
     layout.flexWrap = YGWrapWrap;
 }
 
-- (CGSize)yogaLayout:(ARListViewYogaLayout *)yogaLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake( 100 + (indexPath.row%2) * 50 ,100 + (indexPath.row%2) * 50);
-}
-
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationForItemAtIndexPath:(NSIndexPath *)indexPath itemLayout:(YGLayout *)layout {
-    layout.marginTop = 10;
-    layout.marginRight = 10;
+    CGFloat width = CGRectGetWidth(self.view.bounds) / 3 - 4 * 4;
+    layout.width = width;
+    layout.height = width;
+    layout.margin = 2;
 }
 
 @end

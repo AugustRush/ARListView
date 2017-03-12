@@ -22,7 +22,7 @@
 - (void)loadView {
     ARListViewFlowLayout *flowLayout = [[ARListViewFlowLayout alloc] initWithDelegate:self];
     ARListView *listView = [[ARListView alloc] initWithLayout:flowLayout];
-    listView.backgroundColor = [UIColor purpleColor];
+    listView.backgroundColor = [UIColor whiteColor];
     listView.dataSource = self;
     listView.delegate = self;
     [listView registerClass:[ListViewItem1 class] forCellReuseIdentifier:@"item1"];

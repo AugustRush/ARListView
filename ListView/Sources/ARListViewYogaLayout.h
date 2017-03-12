@@ -15,9 +15,7 @@
 
 @required
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationWithLayout:(YGLayout *)layout;
-- (CGSize)yogaLayout:(ARListViewYogaLayout *)yogaLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 
-@optional
 - (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationForItemAtIndexPath:(NSIndexPath *)indexPath itemLayout:(YGLayout *)layout;
 
 @end
