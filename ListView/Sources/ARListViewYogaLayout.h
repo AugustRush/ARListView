@@ -7,12 +7,18 @@
 //
 
 #import "ARListViewLayout.h"
+#import "ARListViewYogaLayoutRootAttributes.h"
+#import "YGLayout.h"
 
 @class ARListViewYogaLayout;
 @protocol ARListViewYogaLayoutDelegate <NSObject>
 
 @required
-- (CGSize)flowLayout:(ARListViewYogaLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationWithLayout:(YGLayout *)layout;
+- (CGSize)yogaLayout:(ARListViewYogaLayout *)yogaLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
+
+@optional
+- (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationForItemAtIndexPath:(NSIndexPath *)indexPath itemLayout:(YGLayout *)layout;
 
 @end
 

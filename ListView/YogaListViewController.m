@@ -1,27 +1,27 @@
 //
-//  ViewController.m
+//  YogaListViewController.m
 //  ListView
 //
-//  Created by AugustRush on 2017/3/7.
+//  Created by AugustRush on 2017/3/12.
 //  Copyright © 2017年 August. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "YogaListViewController.h"
 #import "ARListView.h"
 #import "ListViewItem1.h"
 #import "ListViewItem2.h"
 
-@interface ViewController ()<ARListViewDataSource,ARListViewFlowLayoutDelegate,ARListViewDelegate>
+@interface YogaListViewController ()<ARListViewDataSource,ARListViewYogaLayoutDelegate,ARListViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray<NSString *> *feeds;
 
 @end
 
-@implementation ViewController
+@implementation YogaListViewController
 
 - (void)loadView {
-    ARListViewFlowLayout *flowLayout = [[ARListViewFlowLayout alloc] initWithDelegate:self];
-    ARListView *listView = [[ARListView alloc] initWithLayout:flowLayout];
+    ARListViewYogaLayout *yogaLayout = [[ARListViewYogaLayout alloc] initWithDelegate:self];
+    ARListView *listView = [[ARListView alloc] initWithLayout:yogaLayout];
     listView.backgroundColor = [UIColor purpleColor];
     listView.dataSource = self;
     listView.delegate = self;
@@ -62,10 +62,12 @@
     
     if (indexPath.section == 0) {
         ListViewItem1 *item = [listView dequeueReusableItemWithIdentifier:@"item1" indexPath:indexPath];
+        item.titleLabel.adjustsFontSizeToFitWidth = YES;
         item.titleLabel.text = [NSString stringWithFormat:@"%@[%ld  %ld]",text,(long)indexPath.row,(long)indexPath.section];
         listViewItem = item;
     } else {
         ListViewItem2 *item = [listView dequeueReusableItemWithIdentifier:@"item2" indexPath:indexPath];
+        item.titleLabel.adjustsFontSizeToFitWidth = YES;
         item.titleLabel.text = [NSString stringWithFormat:@"%@[%ld  %ld]",text,(long)indexPath.row,(long)indexPath.section];
         listViewItem = item;
     }
@@ -81,24 +83,24 @@
     [listView insertItemsAtIndexPaths:@[insert]];
 }
 
-#pragma mark - ARListViewFlowLayoutDelegate methods
+#pragma mark - ARListViewYogaLayoutDelegate methods
 
-- (CGSize)flowLayout:(ARListViewFlowLayout *)flowLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(300, 40 + indexPath.row);
+- (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationWithLayout:(YGLayout *)layout {
+    layout.maxWidth = 320;
+    layout.flexDirection = YGFlexDirectionRow;
+    layout.justifyContent = YGJustifyFlexStart;
+    layout.alignContent = YGAlignFlexStart;
+    layout.alignItems = YGAlignFlexStart;
+    layout.flexWrap = YGWrapWrap;
 }
 
-//- (void)listView:(ARListView *)listView willDisplayItem:(ARListViewItem *)item forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    CGRect frame = item.frame;
-//    BOOL isBottom = CGRectGetMaxY(frame) > CGRectGetMidY(listView.bounds);
-//    item.frame = CGRectOffset(frame, 0, isBottom ? 500: -500);
-//    [UIView animateWithDuration:0.6
-//                          delay:0.0
-//         usingSpringWithDamping:0.8
-//          initialSpringVelocity:0.5
-//                        options:UIViewAnimationOptionAllowUserInteraction
-//                     animations:^{
-//                         item.frame = frame;
-//                     } completion:nil];
-//}
+- (CGSize)yogaLayout:(ARListViewYogaLayout *)yogaLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake( 60 , 40);
+}
+
+- (void)yogaLayout:(ARListViewYogaLayout *)yogaLayout configurationForItemAtIndexPath:(NSIndexPath *)indexPath itemLayout:(YGLayout *)layout {
+    layout.marginTop = 10;
+    layout.marginRight = 10;
+}
 
 @end

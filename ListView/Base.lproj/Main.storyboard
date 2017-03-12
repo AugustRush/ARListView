@@ -13,7 +13,7 @@
         <scene sceneID="eDv-tn-uyv">
             <objects>
                 <navigationController id="SjX-Kv-a8L" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" opaque="NO" contentMode="scaleToFill" misplaced="YES" id="paP-kS-f0A">
+                    <navigationBar key="navigationBar" opaque="NO" contentMode="scaleToFill" id="paP-kS-f0A">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -40,7 +40,10 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pnG-vL-CbO">
                                 <rect key="frame" x="142" y="271" width="91" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Push listView"/>
+                                <color key="backgroundColor" red="1" green="0.23146846735474513" blue="0.33745215483608404" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Push listView">
+                                    <color key="titleShadowColor" red="1" green="0.2335054288" blue="0.60924332530000003" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="pushTableList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="baM-yd-VnP"/>
                                 </connections>
@@ -48,6 +51,7 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TOt-XI-HnN">
                                 <rect key="frame" x="137" y="346" width="100" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.27394363629718277" green="1" blue="0.46342255731675808" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="push yoga List"/>
                                 <connections>
                                     <action selector="pushYogaList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xr2-5O-Rds"/>

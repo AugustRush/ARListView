@@ -7,8 +7,9 @@
 //
 
 #import "RootViewController.h"
-#import "ViewController.h"
+#import "TableViewController.h"
 #import "UIView+Yoga.h"
+#import "YogaListViewController.h"
 
 @interface RootViewController ()
 
@@ -27,6 +28,7 @@
     
     for (UIView *sub in self.view.subviews) {
         sub.yoga.isEnabled = YES;
+        sub.yoga.marginTop = 10;
     }
     
     [self.view.yoga applyLayoutWithSize:CGSizeMake(CGRectGetWidth(self.view.bounds), 400) preserveOrigin:YES];
@@ -42,7 +44,8 @@
 }
 
 - (IBAction)pushYogaList:(id)sender {
-    
+    YogaListViewController *yogaList = [[YogaListViewController alloc] init];
+    [self.navigationController pushViewController:yogaList animated:YES];
 }
 
 /*

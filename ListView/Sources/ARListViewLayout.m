@@ -71,8 +71,8 @@
     CGFloat maxX = 0.0;
     CGFloat minY = 0.0;
     CGFloat maxY = 0.0;
-    CGFloat totalWidth = _listView.contentInset.left + _listView.contentInset.right;
-    CGFloat totalHeight = _listView.contentInset.top + _listView.contentInset.bottom;
+    CGFloat totalWidth = 0;
+    CGFloat totalHeight = 0;
     for (NSUInteger i = 0; i < sections; i++) {
         NSUInteger numberOfItems = [_listView numberOfItemsInSection:i];
         for (NSUInteger j = 0; j < numberOfItems; j++) {

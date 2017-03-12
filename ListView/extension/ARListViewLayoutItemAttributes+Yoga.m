@@ -44,7 +44,7 @@ static const void *kYGYogaAssociatedKey = &kYGYogaAssociatedKey;
 }
 
 - (NSArray<id<YogaLayoutable>> *)leafNodes {
-    return @[];
+    return nil;
 }
 
 @end
