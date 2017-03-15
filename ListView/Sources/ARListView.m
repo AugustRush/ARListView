@@ -132,8 +132,9 @@ typedef NSMutableSet<__kindof ARListViewItem *> * REUSED_SET;
     for (NSIndexPath *indexPath in indexPaths) {
         ARListViewLayoutItemAttributes *attr = [_layout layoutAttributesAtIndexPath:indexPath];
         [_layout __cachedAttributes:attr atIndexPath:indexPath];
-        [self reloadData];
     }
+    
+    [self reloadData];
 }
 
 #pragma mark - Private methods

@@ -11,7 +11,6 @@
 #import "ARListViewFlowLayout.h"
 #import "ARListViewYogaLayout.h"
 
-@protocol ARListViewLayoutProtocol;
 @protocol ARListViewDataSource;
 @protocol ARListViewDelegate;
 NS_ASSUME_NONNULL_BEGIN
@@ -38,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 //
 - (void)insertItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
 @end
+
+////////////////////////
 
 @protocol ARListViewDataSource <NSObject>
 
